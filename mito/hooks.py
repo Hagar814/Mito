@@ -8,7 +8,13 @@ app_license = "mit"
 
 # Includes in <head>
 # ------------------
+app_include_js = [
+    "https://unpkg.com/tabulator-tables@5.5.0/dist/js/tabulator.min.js"
+]
 
+app_include_css = [
+    "https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator.min.css"
+]
 # include js, css files in header of desk.html
 # app_include_css = "/assets/mito/css/mito.css"
 # app_include_js = "/assets/mito/js/mito.js"
