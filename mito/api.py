@@ -66,39 +66,33 @@ def fetch_sales_order_data_to_project(doc, method=None):
     so = frappe.get_doc("Sales Order", doc.sales_order)
 
     # =========================
-    # Copy matrix fields
+    # MAIN FIELDS
     # =========================
-    doc.custom_matrix_data = so.get("custom_matrix_data")
-
-    # only if field exists
-    if hasattr(so, "custom_matrix_html"):
-        doc.custom_matrix_html = so.get("custom_matrix_html")
+    doc.customer = so.customer
+    doc.company = so.company
+    doc.custom_matrix_data = so.custom_matrix_data
 
     # =========================
-    # Copy MEP table
+    # MEP TABLE
     # =========================
-    doc.set("custom_mep_", [])
+    doc.custom_mep_ = []
 
-    for row in so.get("custom_mep_") or []:
+    for mep in so.custom_mep_:
         doc.append("custom_mep_", {
-            "mep": row.mep
+            "mep": mep.mep
         })
 
     # =========================
-    # Copy Task Period
-    # -> custom_progress
+    # PROGRESS TABLE
     # =========================
-    doc.set("custom_progress", [])
+    doc.custom_progress = []
 
-    for row in so.get("custom_task_period") or []:
+    for row in so.custom_task_period:
 
         doc.append("custom_progress", {
             "task_name": row.task_name,
-            "period": cint(row.period or 0),
             "department": row.department,
             "percent": row.percent,
             "rate": row.rate,
-            "weight": 0,
-            "progress": 0,
-            "status": 0
+            "period": row.period
         })

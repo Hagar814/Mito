@@ -28,12 +28,12 @@
    "options": "Task"
   },
   {
-   "fetch_from": "task.subject",
    "fieldname": "task_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Task Name"
+   "label": "Task Name",
+   "read_only": 1
   },
   {
    "fieldname": "weight",
@@ -47,14 +47,16 @@
    "fieldtype": "Percent",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Progress"
+   "label": "Progress",
+   "read_only": 1
   },
   {
    "fieldname": "status",
    "fieldtype": "Percent",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Status"
+   "label": "Status",
+   "read_only": 1
   },
   {
    "fieldname": "create_task",
@@ -71,28 +73,32 @@
    "fieldname": "department",
    "fieldtype": "Link",
    "label": "Department",
-   "options": "Department"
+   "options": "Department",
+   "read_only": 1
   },
   {
    "fieldname": "percent",
    "fieldtype": "Percent",
+   "hidden": 1,
    "label": "Percent"
   },
   {
    "fieldname": "rate",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Rate"
   },
   {
    "fieldname": "period",
    "fieldtype": "Data",
-   "label": "Period"
+   "label": "Period",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-10 15:37:21.647352",
+ "modified": "2026-05-10 16:29:45.386064",
  "modified_by": "Administrator",
  "module": "Mito",
  "name": "Project Progress",
