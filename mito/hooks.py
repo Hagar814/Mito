@@ -15,6 +15,16 @@ app_include_js = [
 app_include_css = [
     "https://unpkg.com/tabulator-tables@5.5.0/dist/css/tabulator.min.css"
 ]
+
+
+doc_events = {
+    "Sales Order": {
+        "before_save": "mito.api.create_task_period"
+    },
+    "Quotation": {
+        "before_save": "mito.api.create_task_period"
+    }
+}
 # include js, css files in header of desk.html
 # app_include_css = "/assets/mito/css/mito.css"
 # app_include_js = "/assets/mito/js/mito.js"
