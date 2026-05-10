@@ -23,6 +23,9 @@ doc_events = {
     },
     "Quotation": {
         "before_save": "mito.api.create_task_period"
+    },
+    "Project": {
+        "before_insert": "mito.api.fetch_sales_order_data_to_project"
     }
 }
 # include js, css files in header of desk.html

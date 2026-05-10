@@ -53,3 +53,52 @@ def create_task_period(doc, method=None):
                         "rate": rate,
                         "department": department
                     })
+
+import frappe
+from frappe.utils import cint
+
+
+def fetch_sales_order_data_to_project(doc, method=None):
+
+    if not doc.sales_order:
+        return
+
+    so = frappe.get_doc("Sales Order", doc.sales_order)
+
+    # =========================
+    # Copy matrix fields
+    # =========================
+    doc.custom_matrix_data = so.get("custom_matrix_data")
+
+    # only if field exists
+    if hasattr(so, "custom_matrix_html"):
+        doc.custom_matrix_html = so.get("custom_matrix_html")
+
+    # =========================
+    # Copy MEP table
+    # =========================
+    doc.set("custom_mep_", [])
+
+    for row in so.get("custom_mep_") or []:
+        doc.append("custom_mep_", {
+            "mep": row.mep
+        })
+
+    # =========================
+    # Copy Task Period
+    # -> custom_progress
+    # =========================
+    doc.set("custom_progress", [])
+
+    for row in so.get("custom_task_period") or []:
+
+        doc.append("custom_progress", {
+            "task_name": row.task_name,
+            "period": cint(row.period or 0),
+            "department": row.department,
+            "percent": row.percent,
+            "rate": row.rate,
+            "weight": 0,
+            "progress": 0,
+            "status": 0
+        })
