@@ -6,82 +6,50 @@ def create_task_period(doc, method=None):
 
     matrix_text = doc.custom_matrix_data or ""
 
-    # clear old rows
-    doc.custom_task_period = []
-
-    # parse json safely
     try:
         data = json.loads(matrix_text)
     except Exception as e:
-        frappe.log_error(
-            f"INVALID JSON: {str(e)}",
-            "TASK PERIOD ERROR"
-        )
+        frappe.log_error(str(e), "TASK JSON ERROR")
         return
 
-    # loop clusters
     for cluster_name, cluster in data.items():
 
-        rows = cluster.get("data", [])
-
-        for row in rows:
+        for row in cluster.get("data", []):
 
             stage = row.get("row")
-            percent = row.get("_percent", 0)
 
-            # skip invalid rows
-            if not stage:
+            if not stage or stage.upper() == "TOTAL":
                 continue
 
-            # skip TOTAL row
-            if str(stage).upper() == "TOTAL":
+            percent = float(row.get("_percent") or 0)
+            if percent <= 0:
                 continue
 
-            # skip zero %
-            if float(percent or 0) <= 0:
-                continue
-
-            # loop MEPs
             for mep_row in doc.custom_mep_:
 
                 mep = mep_row.mep
-
-                # get rate from json row
                 rate = row.get(mep, 0)
 
-                # department
-                department = frappe.db.get_value(
-                    "MEP",
-                    mep,
-                    "department"
-                ) or ""
-
-                # task name
                 task_name = f"{cluster_name} | {stage} | {mep}"
 
-                # avoid duplicates
-                exists = False
+                department = frappe.db.get_value("MEP", mep, "department") or ""
 
+                # check existing row
+                existing = None
                 for d in doc.custom_task_period:
                     if d.task_name == task_name:
-                        exists = True
-                        d.percent = percent
-                        d.rate = rate
-                        d.department = department
+                        existing = d
                         break
 
-                # create row
-                if not exists:
-
-                    r = doc.append("custom_task_period", {})
-
-                    r.task_name = task_name
-                    r.period = "0"
-                    r.percent = percent
-                    r.rate = rate
-                    r.department = department
-
-                # debug log
-                frappe.logger().info(
-                    f"TASK CREATED: {task_name}"
-                )
+                if existing:
+                    existing.percent = percent
+                    existing.rate = rate
+                    existing.department = department
+                else:
+                    doc.append("custom_task_period", {
+                        "task_name": task_name,
+                        "period": "0",
+                        "percent": percent,
+                        "rate": rate,
+                        "department": department
+                    })
